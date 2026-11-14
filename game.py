@@ -1,12 +1,9 @@
 import random
 
-# ==========================================
-# 1. БАЗОВЫЙ КЛАСС (Наследование)
-# ==========================================
 class Character:
     def __init__(self, name, hp, power):
         self.name = name
-        self._hp = hp          # Инкапсуляция (защищенное поле)
+        self._hp = hp         
         self._power = power
 
     def is_alive(self):
@@ -21,15 +18,11 @@ class Character:
             self._hp = 0
 
     def attack(self, target):
-        # Полиморфизм: этот метод будет переопределен в дочерних классах
         damage = self._power
         target.take_damage(damage)
         print(f"{self.name} атакует {target.name}! Урон: {damage}. У {target.name} осталось {target.get_hp()} HP.")
 
 
-# ==========================================
-# 2. КЛАССЫ-НАСЛЕДНИКИ (Полиморфизм)
-# ==========================================
 class Elf(Character):
     def attack(self, target):
         damage = self._power + random.randint(5, 15) # Эльфы бьют магией (случайный урон)
@@ -55,13 +48,11 @@ class Human(Character):
         print(f"🧑 Человек {self.name} атакует мечом {target.name}! Урон: {damage}. У {target.name} осталось {target.get_hp()} HP.")
 
 
-# ==========================================
-# 3. ФАБРИКА (Фабричный метод)
-# ==========================================
+
 class HeroFactory:
     @staticmethod
     def create_hero(hero_type, name):
-        # Фабрика сама решает, какого героя создать
+        
         if hero_type == "elf":
             return Elf(name, hp=80, power=15)
         elif hero_type == "orc":
@@ -74,13 +65,10 @@ class HeroFactory:
             raise ValueError("Неизвестный тип героя!")
 
 
-# ==========================================
-# 4. ИГРА (Кто кого победит)
-# ==========================================
+
 def main():
     print("=== СОЗДАНИЕ ГЕРОЕВ ЧЕРЕЗ ФАБРИКУ ===")
-    # Создаем героев с помощью фабрики, не вызывая классы напрямую
-    heroes = [
+    
         HeroFactory.create_hero("elf", "Леголас"),
         HeroFactory.create_hero("orc", "Азог"),
         HeroFactory.create_hero("dwarf", "Гимли"),
@@ -90,19 +78,19 @@ def main():
     print("На арену выходят: " + ", ".join([h.name for h in heroes]))
     
     round_num = 1
-    # Битва идет, пока живы хотя бы 2 героя
+    
     while len([h for h in heroes if h.is_alive()]) > 1:
         print(f"\n--- РАУНД {round_num} ---")
         
-        # Берем только живых
+        
         alive_heroes = [h for h in heroes if h.is_alive()]
         
-        # Случайно выбираем, кто бьет, а кто получает
+      
         attacker = random.choice(alive_heroes)
         possible_targets = [h for h in alive_heroes if h != attacker]
         target = random.choice(possible_targets)
 
-        # Атака (тут работает полиморфизм, каждый бьет по-своему)
+        
         attacker.attack(target)
 
         if not target.is_alive():
@@ -110,7 +98,7 @@ def main():
 
         round_num += 1
 
-    # Ищем победителя
+   
     winner = [h for h in heroes if h.is_alive()][0]
     print(f"\n🏆 ПОБЕДИТЕЛЬ: {winner.name}!")
 
